@@ -18,25 +18,20 @@ fn find_biggest_sum(input: &str) -> Result<u32, BadInputError> {
         return Err(BadInputError::Empty);
     }
 
-    let blocks = input
-        .split("\n\n")
-        .filter(|item| !item.is_empty())
-        .collect::<Vec<&str>>();
-
-    let mut sums: Vec<u32> = Vec::new();
-    for block in blocks {
-        let number_strs = block
-            .split('\n')
-            .filter(|item| !item.is_empty())
-            .collect::<Vec<&str>>();
-        let mut sum = 0;
-        for number_str in number_strs {
-            sum += number_str.parse::<u32>()?;
+    let mut sums = Vec::new();
+    let mut current_sum = 0;
+    for line in input.split('\n') {
+        if line.is_empty() {
+            sums.push(current_sum);
+            current_sum = 0;
+            continue;
         }
-        sums.push(sum);
-    }
 
-    let mut biggest_sum = 0u32;
+        current_sum += line.parse::<u32>()?;
+    }
+    sums.push(current_sum);
+
+    let mut biggest_sum = 0;
     for sum in sums {
         if sum > biggest_sum {
             biggest_sum = sum
